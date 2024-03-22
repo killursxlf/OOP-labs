@@ -1,0 +1,10 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/OOP-labs/v17
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
+/.vs/OOP-labs/FileContentIndex
+/.vs/OOP-labs/FileContentIndex/b55637fd-71fc-4ba5-b89c-abeb2df70796.vsidx
