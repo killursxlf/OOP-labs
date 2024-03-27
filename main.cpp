@@ -12,7 +12,8 @@ struct TourRoute {
     string difficulty;
     string date;
 
-    void print() const {
+    void print() const 
+    {
         cout << "Name: " << name << " ";
         cout << "Length: " << length << " ";
         cout << "Difficulty: " << difficulty << " ";
@@ -24,39 +25,49 @@ struct TourManager {
     vector<TourRoute> routes;
     ofstream logFile;
 
-    TourManager() {
+    TourManager() 
+    {
         logFile.open("log.txt", ios::out | ios::binary);
-        if (!logFile.is_open()) {
+        if (!logFile.is_open()) 
+        {
             cerr << "Error opening log file." << endl;
         }
     }
 
-    ~TourManager() {
+    ~TourManager()
+    {
         logFile.close();
     }
 
-    void addRoute(const TourRoute& route) {
+    void addRoute(const TourRoute& route) 
+    {
         routes.push_back(route);
         logFile << "Added route: " << route.name << endl;
     }
 
-    void deleteRoute(int index) {
-        if (index >= 0 && index < routes.size()) {
+    void deleteRoute(int index) 
+    {
+        if (index >= 0 && index < routes.size()) 
+        {
             logFile << "Deleted route: " << routes[index].name << endl;
             routes.erase(routes.begin() + index);
         }
-        else {
+        else 
+        {
             cerr << "Invalid index." << endl;
         }
     }
 
-    void printAllRoutes() const {
-        for (const auto& route : routes) {
+    void printAllRoutes() const 
+    {
+        for (const auto& route : routes) 
+        {
             route.print();
         }
     }
 
-    void sortRoutesByLength() {
+    void sortRoutesByLength() 
+    {
         sort(routes.begin(), routes.end(), [](const TourRoute& a, const TourRoute& b) {
             return a.length < b.length;
             });
