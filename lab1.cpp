@@ -6,14 +6,20 @@
 
 using namespace std;
 
-struct TourRoute {
-    string name;
-    double length;
-    string difficulty;
-    string date;
+const string path = "myFile.txt";
+const int maxlen = 255;
 
-    void print() const
+struct TourRoute
+{
+    char name[maxlen];
+    double length;
+    char difficulty[maxlen];
+    char date[maxlen];
+    int index;
+
+    void print()
     {
+        cout << "Index: " << index << ". ";
         cout << "Name: " << name << " ";
         cout << "Length: " << length << " ";
         cout << "Difficulty: " << difficulty << " ";
@@ -21,74 +27,159 @@ struct TourRoute {
     }
 };
 
-struct TourManager {
+void addRoute(const TourRoute& route)
+{
+    ofstream fin;
+    fin.open(path, ios::binary | ios::app);
+    fin.write((char*)&route, sizeof(TourRoute));
+    fin.close();
+}
+
+
+
+void printAllRoutes()
+{
+    ifstream fon;
+    fon.open(path);
+    if (!fon.is_open())
+    {
+        cout << "Cant open the file, mb u need add the route!" << endl;
+    }
+    else
+    {
+        TourRoute temp;
+        while (fon.read((char*)&temp, sizeof(TourRoute)))
+        {
+            temp.print();
+        }
+        fon.close();
+    }
+}
+
+bool compareByLength(const TourRoute& route1, const TourRoute& route2)
+{
+    return route1.length < route2.length;
+}
+
+
+void sortRoutesByLength(vector<TourRoute>& routes)
+{
+    sort(routes.begin(), routes.end(), compareByLength);
+
+    ofstream fout(path, ios::binary);
+    if (!fout.is_open())
+    {
+        cout << "Failed to open file for writing." << endl;
+        return;
+    }
+
+    for (const auto& route : routes)
+    {
+        fout.write((char*)&route, sizeof(TourRoute));
+    }
+
+    fout.close();
+}
+
+int getNextIndex(const vector<TourRoute>& routes)
+{
+    int maxIndex = 0;
+    for (const auto& route : routes)
+    {
+        if (route.index > maxIndex)
+        {
+            maxIndex = route.index;
+        }
+    }
+    return maxIndex;
+}
+
+void deleteRoute(int indexToDelete)
+{
     vector<TourRoute> routes;
-    ofstream logFile;
 
-    TourManager()
+    ifstream fin(path);
+    if (!fin.is_open())
     {
-        logFile.open("log.txt", ios::out | ios::binary);
-        if (!logFile.is_open())
-        {
-            cerr << "Error opening log file." << endl;
-        }
-    } 
-
-    ~TourManager()
-    {
-        logFile.close();
+        cout << "Failed to open file for reading." << endl;
+        return;
     }
 
-    void addRoute(const TourRoute& route)
+    TourRoute temp;
+    while (fin.read((char*)&temp, sizeof(TourRoute)))
     {
-        routes.push_back(route);
-        logFile << "Added route: " << route.name << endl;
+        routes.push_back(temp);
+    }
+    fin.close();
+
+
+    auto it = remove_if(routes.begin(), routes.end(), [indexToDelete](const TourRoute& route) {
+        return route.index == indexToDelete;
+        });
+
+
+    if (it == routes.end())
+    {
+        cout << "Route with index " << indexToDelete << " not found." << endl;
+        return;
     }
 
-    void deleteRoute(int index)
+
+    routes.erase(it, routes.end());
+
+
+    ofstream fout(path, ios::binary);
+    if (!fout.is_open())
     {
-        if (index >= 0 && index < routes.size())
-        {
-            logFile << "Deleted route: " << routes[index].name << endl;
-            routes.erase(routes.begin() + index);
-        }
-        else
-        {
-            cerr << "Invalid index." << endl;
-        }
+        cout << "Failed to open file for writing." << endl;
+        return;
     }
 
-    void printAllRoutes() const
+    for (const auto& route : routes)
     {
-        for (const auto& route : routes)
-        {
-            route.print();
-        }
+        fout.write((char*)&route, sizeof(TourRoute));
+        cout << "Route deleted successfully." << endl;
     }
+    fout.close();
+}
 
-    void sortRoutesByLength()
-    {
-        sort(routes.begin(), routes.end(), [](const TourRoute& a, const TourRoute& b) {
-            return a.length < b.length;
-            });
-        logFile << "Sorted routes by length." << endl;
-    }
-};
 
-int main() {
-    TourManager manager;
-
+int menu()
+{
+    cout << "\n";
     int choice;
-    while (true) {
-        cout << "1. Add Route\n"
-            "2. Delete Route\n"
-            "3. Print All Routes\n"
-            "4. Sort Routes by Length\n"
-            "5. Exit\n"
-            "Enter your choice: ";
-        cin >> choice;
+    cout << "1. Add Route\n";
+    cout << "2. Delete Route\n";
+    cout << "3. Print All Routes\n";
+    cout << "4. Sort Routes by Length\n";
+    cout << "5. Exit\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+    return choice;
+}
 
-        switch (choice) {
+
+int main()
+{
+
+    vector<TourRoute> routes;
+
+    ifstream file_in(path, ios::binary);
+    if (file_in.is_open())
+    {
+        TourRoute temp;
+        while (file_in.read((char*)&temp, sizeof(TourRoute)))
+        {
+            routes.push_back(temp);
+        }
+        file_in.close();
+    }
+
+    while (true)
+    {
+
+        switch (menu())
+        {
         case 1: {
             TourRoute newRoute;
             cout << "Enter route name: " << endl;
@@ -99,22 +190,24 @@ int main() {
             cin >> newRoute.difficulty;
             cout << "Enter route date: ";
             cin >> newRoute.date;
-            manager.addRoute(newRoute);
+            newRoute.index = getNextIndex(routes) + 1;
+            addRoute(newRoute);
+            routes.push_back(newRoute);
             break;
         }
         case 2: {
             int index;
             cout << "Enter index of route to delete: ";
             cin >> index;
-            manager.deleteRoute(index);
+            deleteRoute(index);
             break;
         }
         case 3: {
-            manager.printAllRoutes();
+            printAllRoutes();
             break;
         }
         case 4: {
-            manager.sortRoutesByLength();
+            sortRoutesByLength(routes);
             break;
         }
         case 5: {
@@ -124,7 +217,4 @@ int main() {
             cout << "Invalid choice. Please try again." << endl;
         }
     }
-     
-    return 0;
 }
-
