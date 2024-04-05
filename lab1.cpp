@@ -32,7 +32,7 @@ struct TourManager {
         {
             cerr << "Error opening log file." << endl;
         }
-    }
+    } 
 
     ~TourManager()
     {
