@@ -27,6 +27,7 @@ struct TourRoute
     }
 };
 
+
 void addRoute(const TourRoute& route)
 {
     ofstream fin;
@@ -43,6 +44,7 @@ void addRoute(const TourRoute& route)
         fin.close();
     }
 }
+
 
 void readFile(vector<TourRoute>& routes)
 {
@@ -65,6 +67,26 @@ void readFile(vector<TourRoute>& routes)
     }
 }
 
+
+void writeInFile(vector<TourRoute>& routes)
+{
+    ofstream fout(FILE_NAME, ios::binary);
+    if (!fout.is_open())
+    {
+        cout << "Failed to open file for writing." << endl;
+        return;
+    }
+    else 
+    {
+        for (const auto& route : routes)
+        {
+            fout.write((char*)&route, sizeof(TourRoute));
+        }
+        fout.close();
+    }
+}
+
+
 void printAllRoutes()
 {
     ifstream fon;
@@ -85,6 +107,7 @@ void printAllRoutes()
     }
 }
 
+
 bool compareByLength(const TourRoute& route1, const TourRoute& route2)
 {
     return route1.length < route2.length;
@@ -95,20 +118,9 @@ void sortRoutesByLength(vector<TourRoute>& routes)
 {
     sort(routes.begin(), routes.end(), compareByLength);
 
-    ofstream fout(FILE_NAME, ios::binary);
-    if (!fout.is_open())
-    {
-        cout << "Failed to open file for writing." << endl;
-        return;
-    }
-
-    for (const auto& route : routes)
-    {
-        fout.write((char*)&route, sizeof(TourRoute));
-    }
-
-    fout.close();
+    writeInFile(routes);
 }
+
 
 int getNextIndex(const vector<TourRoute>& routes)
 {
@@ -122,6 +134,7 @@ int getNextIndex(const vector<TourRoute>& routes)
     }
     return maxIndex;
 }
+
 
 void deleteRoute(int indexToDelete)
 {
@@ -140,21 +153,8 @@ void deleteRoute(int indexToDelete)
 
     routes.erase(it, routes.end());
 
-    ofstream fout(FILE_NAME, ios::binary);
-    if (!fout.is_open())
-    {
-        cout << "Failed to open file for writing." << endl;
-        return;
-    }
-
-    for (const auto& route : routes)
-    {
-        fout.write((char*)&route, sizeof(TourRoute));
-    }
-
+    writeInFile(routes);
     cout << "Route deleted successfully." << endl;
-
-    fout.close();
 }
 
 
@@ -164,9 +164,26 @@ int menu()
     int choice;
     cout << " 1. Add Route\n"
         " 2.Delete Route\n "
-        " 3. Print All Routes\n 4. Sort Routes by Length\n 5. Exit\n Enter your choice: " << endl;
+        " 3. Print All Routes\n"
+        " 4. Sort Routes by Length\n "
+        " 5. Exit\n"
+        " Enter your choice : " << endl;
     cin >> choice;
     return choice;
+}
+
+
+void fillTheStructure(TourRoute& newRoute)
+{
+    cout << "Enter route name: " << endl;
+    cin >> newRoute.name;
+    cout << "Enter route length: ";
+    cin >> newRoute.length;
+    cout << "Enter route difficulty: ";
+    cin >> newRoute.difficulty;
+    cout << "Enter route date: ";
+    cin >> newRoute.date;
+    newRoute.index = getNextIndex(routes) + 1;
 }
 
 
@@ -183,15 +200,7 @@ int main()
         {
         case 1: {
             TourRoute newRoute;
-            cout << "Enter route name: " << endl;
-            cin >> newRoute.name;
-            cout << "Enter route length: ";
-            cin >> newRoute.length;
-            cout << "Enter route difficulty: ";
-            cin >> newRoute.difficulty;
-            cout << "Enter route date: ";
-            cin >> newRoute.date;
-            newRoute.index = getNextIndex(routes) + 1;
+            fillTheStructure(newRoute);
             addRoute(newRoute);
             routes.push_back(newRoute);
             break;
