@@ -6,15 +6,15 @@
 
 using namespace std;
 
-const string path = "myFile.txt";
-const int maxlen = 255;
+const int MAXLEN = 255;
+const string FILE_NAME = "myFile.txt";
 
 struct TourRoute
 {
-    char name[maxlen];
+    char name[MAXLEN];
     double length;
-    char difficulty[maxlen];
-    char date[maxlen];
+    char difficulty[MAXLEN];
+    char date[MAXLEN];
     int index;
 
     void print()
@@ -30,17 +30,45 @@ struct TourRoute
 void addRoute(const TourRoute& route)
 {
     ofstream fin;
-    fin.open(path, ios::binary | ios::app);
-    fin.write((char*)&route, sizeof(TourRoute));
-    fin.close();
+    fin.open(FILE_NAME, ios::binary | ios::app);
+
+    if (!fin.is_open())
+    {
+        cout << "Failed to open file for writing." << endl;
+        return;
+    }
+    else
+    {
+        fin.write((char*)&route, sizeof(TourRoute));
+        fin.close();
+    }
 }
 
+void readFile(vector<TourRoute>& routes)
+{
 
+    ifstream file_in(FILE_NAME, ios::binary);
+
+    if (file_in.is_open())
+    {
+        TourRoute temp;
+
+        while (file_in.read((char*)&temp, sizeof(TourRoute)))
+        {
+            routes.push_back(temp);
+        }
+        file_in.close();
+    }
+    else
+    {
+        cout << "Cant open the file." << endl;
+    }
+}
 
 void printAllRoutes()
 {
     ifstream fon;
-    fon.open(path);
+    fon.open(FILE_NAME);
     if (!fon.is_open())
     {
         cout << "Cant open the file, mb u need add the route!" << endl;
@@ -48,6 +76,7 @@ void printAllRoutes()
     else
     {
         TourRoute temp;
+
         while (fon.read((char*)&temp, sizeof(TourRoute)))
         {
             temp.print();
@@ -66,7 +95,7 @@ void sortRoutesByLength(vector<TourRoute>& routes)
 {
     sort(routes.begin(), routes.end(), compareByLength);
 
-    ofstream fout(path, ios::binary);
+    ofstream fout(FILE_NAME, ios::binary);
     if (!fout.is_open())
     {
         cout << "Failed to open file for writing." << endl;
@@ -97,26 +126,11 @@ int getNextIndex(const vector<TourRoute>& routes)
 void deleteRoute(int indexToDelete)
 {
     vector<TourRoute> routes;
-
-    ifstream fin(path);
-    if (!fin.is_open())
-    {
-        cout << "Failed to open file for reading." << endl;
-        return;
-    }
-
-    TourRoute temp;
-    while (fin.read((char*)&temp, sizeof(TourRoute)))
-    {
-        routes.push_back(temp);
-    }
-    fin.close();
-
+    readFile(routes);
 
     auto it = remove_if(routes.begin(), routes.end(), [indexToDelete](const TourRoute& route) {
         return route.index == indexToDelete;
         });
-
 
     if (it == routes.end())
     {
@@ -124,11 +138,9 @@ void deleteRoute(int indexToDelete)
         return;
     }
 
-
     routes.erase(it, routes.end());
 
-
-    ofstream fout(path, ios::binary);
+    ofstream fout(FILE_NAME, ios::binary);
     if (!fout.is_open())
     {
         cout << "Failed to open file for writing." << endl;
@@ -138,8 +150,10 @@ void deleteRoute(int indexToDelete)
     for (const auto& route : routes)
     {
         fout.write((char*)&route, sizeof(TourRoute));
-        cout << "Route deleted successfully." << endl;
     }
+
+    cout << "Route deleted successfully." << endl;
+
     fout.close();
 }
 
@@ -148,12 +162,9 @@ int menu()
 {
     cout << "\n";
     int choice;
-    cout << "1. Add Route\n";
-    cout << "2. Delete Route\n";
-    cout << "3. Print All Routes\n";
-    cout << "4. Sort Routes by Length\n";
-    cout << "5. Exit\n";
-    cout << "Enter your choice: ";
+    cout << " 1. Add Route\n"
+        " 2.Delete Route\n "
+        " 3. Print All Routes\n 4. Sort Routes by Length\n 5. Exit\n Enter your choice: " << endl;
     cin >> choice;
     return choice;
 }
@@ -163,17 +174,7 @@ int main()
 {
 
     vector<TourRoute> routes;
-
-    ifstream file_in(path, ios::binary);
-    if (file_in.is_open())
-    {
-        TourRoute temp;
-        while (file_in.read((char*)&temp, sizeof(TourRoute)))
-        {
-            routes.push_back(temp);
-        }
-        file_in.close();
-    }
+    readFile(routes);
 
     while (true)
     {
