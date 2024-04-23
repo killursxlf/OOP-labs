@@ -6,14 +6,20 @@
 
 using namespace std;
 
-struct TourRoute {
-    string name;
-    double length;
-    string difficulty;
-    string date;
+const int MAXLEN = 255;
+const string FILE_NAME = "myFile.txt";
 
-    void print() const
+struct TourRoute
+{
+    char name[MAXLEN];
+    double length;
+    char difficulty[MAXLEN];
+    char date[MAXLEN];
+    int index;
+
+    void print()
     {
+        cout << "Index: " << index << ". ";
         cout << "Name: " << name << " ";
         cout << "Length: " << length << " ";
         cout << "Difficulty: " << difficulty << " ";
@@ -21,100 +27,197 @@ struct TourRoute {
     }
 };
 
-struct TourManager {
-    vector<TourRoute> routes;
-    ofstream logFile;
 
-    TourManager()
+void addRoute(const TourRoute& route)
+{
+    ofstream fin;
+    fin.open(FILE_NAME, ios::binary | ios::app);
+
+    if (!fin.is_open())
     {
-        logFile.open("log.txt", ios::out | ios::binary);
-        if (!logFile.is_open())
+        cout << "Failed to open file for writing." << endl;
+        return;
+    }
+    else
+    {
+        fin.write((char*)&route, sizeof(TourRoute));
+        fin.close();
+    }
+}
+
+
+void readFile(vector<TourRoute>& routes)
+{
+
+    ifstream file_in(FILE_NAME, ios::binary);
+
+    if (file_in.is_open())
+    {
+        TourRoute temp;
+
+        while (file_in.read((char*)&temp, sizeof(TourRoute)))
         {
-            cerr << "Error opening log file." << endl;
+            routes.push_back(temp);
         }
+        file_in.close();
     }
-
-    ~TourManager()
+    else
     {
-        logFile.close();
+        cout << "Cant open the file." << endl;
     }
+}
 
-    void addRoute(const TourRoute& route)
+
+void writeInFile(vector<TourRoute>& routes)
+{
+    ofstream fout(FILE_NAME, ios::binary);
+    if (!fout.is_open())
     {
-        routes.push_back(route);
-        logFile << "Added route: " << route.name << endl;
+        cout << "Failed to open file for writing." << endl;
+        return;
     }
-
-    void deleteRoute(int index)
-    {
-        if (index >= 0 && index < routes.size())
-        {
-            logFile << "Deleted route: " << routes[index].name << endl;
-            routes.erase(routes.begin() + index);
-        }
-        else
-        {
-            cerr << "Invalid index." << endl;
-        }
-    }
-
-    void printAllRoutes() const
+    else 
     {
         for (const auto& route : routes)
         {
-            route.print();
+            fout.write((char*)&route, sizeof(TourRoute));
+        }
+        fout.close();
+    }
+}
+
+
+void printAllRoutes()
+{
+    ifstream fon;
+    fon.open(FILE_NAME);
+    if (!fon.is_open())
+    {
+        cout << "Cant open the file, mb u need add the route!" << endl;
+    }
+    else
+    {
+        TourRoute temp;
+
+        while (fon.read((char*)&temp, sizeof(TourRoute)))
+        {
+            temp.print();
+        }
+        fon.close();
+    }
+}
+
+
+bool compareByLength(const TourRoute& route1, const TourRoute& route2)
+{
+    return route1.length < route2.length;
+}
+
+
+void sortRoutesByLength(vector<TourRoute>& routes)
+{
+    sort(routes.begin(), routes.end(), compareByLength);
+
+    writeInFile(routes);
+}
+
+
+int getNextIndex(const vector<TourRoute>& routes)
+{
+    int maxIndex = 0;
+    for (const auto& route : routes)
+    {
+        if (route.index > maxIndex)
+        {
+            maxIndex = route.index;
         }
     }
+    return maxIndex;
+}
 
-    void sortRoutesByLength()
+
+void deleteRoute(int indexToDelete)
+{
+    vector<TourRoute> routes;
+    readFile(routes);
+
+    auto it = remove_if(routes.begin(), routes.end(), [indexToDelete](const TourRoute& route) {
+        return route.index == indexToDelete;
+        });
+
+    if (it == routes.end())
     {
-        sort(routes.begin(), routes.end(), [](const TourRoute& a, const TourRoute& b) {
-            return a.length < b.length;
-            });
-        logFile << "Sorted routes by length." << endl;
+        cout << "Route with index " << indexToDelete << " not found." << endl;
+        return;
     }
-};
 
-int main() {
-    TourManager manager;
+    routes.erase(it, routes.end());
 
+    writeInFile(routes);
+    cout << "Route deleted successfully." << endl;
+}
+
+
+int menu()
+{
+    cout << "\n";
     int choice;
-    while (true) {
-        cout << "1. Add Route\n"
-            "2. Delete Route\n"
-            "3. Print All Routes\n"
-            "4. Sort Routes by Length\n"
-            "5. Exit\n"
-            "Enter your choice: ";
-        cin >> choice;
+    cout << " 1. Add Route\n"
+        " 2.Delete Route\n "
+        " 3. Print All Routes\n"
+        " 4. Sort Routes by Length\n "
+        " 5. Exit\n"
+        " Enter your choice : " << endl;
+    cin >> choice;
+    return choice;
+}
 
-        switch (choice) {
+
+void fillTheStructure(TourRoute& newRoute)
+{
+    cout << "Enter route name: " << endl;
+    cin >> newRoute.name;
+    cout << "Enter route length: ";
+    cin >> newRoute.length;
+    cout << "Enter route difficulty: ";
+    cin >> newRoute.difficulty;
+    cout << "Enter route date: ";
+    cin >> newRoute.date;
+    newRoute.index = getNextIndex(routes) + 1;
+}
+
+
+int main()
+{
+
+    vector<TourRoute> routes;
+    readFile(routes);
+
+    while (true)
+    {
+
+        switch (menu())
+        {
         case 1: {
             TourRoute newRoute;
-            cout << "Enter route name: " << endl;
-            cin >> newRoute.name;
-            cout << "Enter route length: ";
-            cin >> newRoute.length;
-            cout << "Enter route difficulty: ";
-            cin >> newRoute.difficulty;
-            cout << "Enter route date: ";
-            cin >> newRoute.date;
-            manager.addRoute(newRoute);
+            fillTheStructure(newRoute);
+            addRoute(newRoute);
+            routes.push_back(newRoute);
             break;
         }
         case 2: {
             int index;
             cout << "Enter index of route to delete: ";
             cin >> index;
-            manager.deleteRoute(index);
+            deleteRoute(index);
             break;
         }
         case 3: {
-            manager.printAllRoutes();
+            printAllRoutes();
             break;
         }
         case 4: {
-            manager.sortRoutesByLength();
+            sortRoutesByLength(routes);
             break;
         }
         case 5: {
@@ -124,6 +227,4 @@ int main() {
             cout << "Invalid choice. Please try again." << endl;
         }
     }
-     
-    return 0;
 }
