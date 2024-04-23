@@ -195,7 +195,6 @@ int main()
 
     while (true)
     {
-
         switch (menu())
         {
         case 1: {
