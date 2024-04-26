@@ -1,59 +1,8 @@
-#include<string>
-#include<iostream>
-#include<vector>
+#include"Shop.h"
 
 using namespace std;
 
-class Shop
-{
-private:
-    string shop_name;
-    string shop_address;
-    vector<string> list_of_products;
-    int work_places;
-    int occupied_posts;
-    double shop_income;
-    vector<pair<string, string>> shop_timeOfWork;
-public:
-    // Getters
-    string getShopName() const { return shop_name; } // Added const for getter returning data
-    string getShopAddress() const { return shop_address; }
-    const vector<string>& getListOfProducts() const { return list_of_products; }
-    int getWorkPlaces() const { return work_places; }
-    int getOccupiedPosts() const { return occupied_posts; }
-    double getShopIncome() const { return shop_income; }
-    const vector<pair<string, string>>& getShopTimeOfWork() const { return shop_timeOfWork; }
-
-    // Setters 
-    void setShopName(const string& name) { shop_name = name; }
-    void setShopAddress(const string& address) { shop_address = address; }
-    void addProduct(const string& product) { list_of_products.push_back(product); } // Simplified product addition using push_back
-    void setWorkPlaces(int workplaces) {
-        if (workplaces < 0) {
-            cout << "Number of work places cannot be negative." << endl;
-        }
-        else
-        {
-            work_places = workplaces;
-        }
-    }
-    void setOccupiedPosts(int occupied) {
-        if (occupied > work_places) {
-            cout << "Occupied posts cannot exceed work places." << endl;
-        }
-        else {
-            occupied_posts = occupied;
-        }
-    }
-    void setShopIncome(const double& income) { shop_income = income; }
-    void setShopTimeOfWork(string first_element, string second_element, int i)
-    {
-        shop_timeOfWork.resize(7);
-        shop_timeOfWork[i].first = first_element;
-        shop_timeOfWork[i].second = second_element;
-    }
-
-};
+const int SIZE = 7;
 
 void addSomeProduct(Shop& MyShop)
 {
@@ -79,6 +28,8 @@ void addTimeOfWork(Shop& MyShop)
     string time;
     int i = 0;
 
+    MyShop.shop_time_of_work.resize(SIZE);
+
     while (i < 7) {
         cout << "Type a day: " << endl;
         cin >> day;
@@ -92,7 +43,16 @@ void addTimeOfWork(Shop& MyShop)
     }
 }
 
-void getTimeOfWork(Shop& MyShop) {
+void getListOfProducts(const Shop& MyShop)
+{
+    vector<string> ListOfProducts = MyShop.getListOfProducts();
+    for (auto el : ListOfProducts) {
+        cout << el << endl;
+    }
+}
+
+void getTimeOfWork(const Shop& MyShop)
+{
     vector<pair<string, string>> timesOfWork;
     timesOfWork = MyShop.getShopTimeOfWork();
     for (auto el : timesOfWork) {
@@ -123,10 +83,7 @@ int main()
     cout << shop_address << endl;
 
     addSomeProduct(MyShop);
-    vector<string> ListOfProducts = MyShop.getListOfProducts();
-    for (auto el : ListOfProducts) {
-        cout << el << endl;
-    }
+    getListOfProducts(MyShop);
 
     cout << "Type a number of work places: " << endl;
     cin >> workPlaces;
