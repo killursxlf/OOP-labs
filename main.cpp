@@ -15,10 +15,9 @@ public:
     {
         cout << "Default constructor work" << endl;
         Name = "empty";
-        area = "empty";
-        population = "empty";
-        post_index = "empty";
-
+        area = 0.0;
+        population = 0.0;
+        post_index = 0;
     }
     Town(string Text, double area_value, double population_value, int index) 
     {
@@ -65,4 +64,3 @@ int main() {
            
     return 0;
 }
-
