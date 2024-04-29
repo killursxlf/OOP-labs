@@ -11,19 +11,19 @@ int main() {
     cout << "c1 - c2 = "; c3.print();
 
     if (c1 > c2)
-        cout << "c1 більше за c2" << endl;
+        cout << "c1 > c2" << endl;
     else
-        cout << "c1 не більше за c2" << endl;
+        cout << "c1 < c2" << endl;
 
 
     --c1;
-    cout << "Після декременту: "; c1.print();
+    cout << "After --: "; c1.print();
 
     c1--;
-    cout << "Після декременту: "; c1.print();
+    cout << "After --: "; c1.print();
 
     c1 = c2;
-    cout << "c1 після присвоєння c2: "; c1.print();
+    cout << "c1 after = c2: "; c1.print();
 
     return 0;
 }
