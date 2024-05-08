@@ -29,7 +29,4 @@ public:
 	void print();
 };
 
-Complex operator-(Complex& main, Complex& other);
-
-
 #endif COMPLEX_H

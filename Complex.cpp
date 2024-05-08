@@ -47,11 +47,6 @@ void Complex::print()
 	cout << "Complex number: " << a << " + " << b << "i" << endl;
 }
 
-Complex operator-(Complex& main, Complex& other)
-{
-	return Complex(main.get_a() - other.get_a(), main.get_b() - other.get_b());
-}
-
 void Complex::operator=(const Complex& other)
 {
 	a = other.a;
