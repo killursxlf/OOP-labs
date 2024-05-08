@@ -1,4 +1,5 @@
-#include "Complex.cpp"
+#include "Complex.h"
+#include<iostream>
 
 using namespace std;
 
@@ -8,22 +9,21 @@ int main() {
 
 
     Complex c3 = c1 - c2;
-    cout << "c1 - c2 = "; 
     c3.print();
 
-    char znak = c1 > c2 ? ">" : "<";
-    cout << "c1 " << znak << " c2"
+    char znak = c1 > c2 ? '>' : '<';
+    cout << "c1 " << znak << " c2" << endl;
 
     --c1;
-    cout << "After --: "; 
+    cout << "After --: ";
     c1.print();
 
     c1--;
-    cout << "After --: "; 
+    cout << "After --: ";
     c1.print();
 
     c1 = c2;
-    cout << "c1 after = c2: "; 
+    cout << "c1 after = c2: ";
     c1.print();
 
     return 0;

@@ -1,6 +1,4 @@
 #include "Complex.h"
-#include <iostream>
-#include <cmath>
 
 using namespace std;
 
@@ -31,16 +29,16 @@ bool Complex::operator>(const Complex& other) const
 
 Complex operator--(Complex& other)
 {
-	other.a--;
-	other.b--;
+	--other.a;
+	--other.b;
 	return other;
 }
 
 Complex operator--(Complex& other, int notused)
 {
 	Complex temp = other;
-	other.a--;
-	other.b--;
+	--other.a;
+	--other.b;
 	return temp;
 }
 

@@ -1,6 +1,9 @@
 #ifndef COMPLEX_H
 #define COMPLEX_H
 
+#include <iostream>
+#include <cmath>
+
 class Complex {
 private:
 	double a;
@@ -29,4 +32,4 @@ public:
 Complex operator-(Complex& main, Complex& other);
 
 
-#endif COMPLEX_
+#endif COMPLEX_H
