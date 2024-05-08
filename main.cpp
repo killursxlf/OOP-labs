@@ -1,59 +1,11 @@
 #include <iostream>
+#include "Town.h"
+#include <vector>
 
 using namespace std;
 
-class Town {
-private: 
-    string Name;
-    double area;
-    double population;
-    int post_index;
-
-public: 
-    Town() 
-    {
-        cout << "Default constructor work" << endl;
-        Name = "empty";
-        area = 0.0;
-        population = 0.0;
-        post_index = 0;
-    }
-
-    Town(string Text, double area_value, double population_value, int index) 
-    {
-        cout << "Constructor with parameters work" << endl;
-        Name = Text;
-        area = area_value;
-        population = population_value;
-        post_index = index;
-    }
-
-    Town(const Town& other_town) 
-    {
-        Name = other_town.Name;
-        area = other_town.area;
-        population = other_town.population;
-        post_index = other_town.post_index;
-        cout << "Work copy constructor" << endl;
-    }
-
-    ~Town() 
-    {
-        cout << "Distructor work" << endl;
-    }
-
-    void Print() 
-    {
-        cout << Name << endl;
-        cout << "Area: " << area << endl;
-        cout << "Population: " << population << endl;
-        cout << "Post index: " << post_index << endl;
-    }
-};
-
-
 int main() {
-    
+
     Town MyTown;
     MyTown.Print();
 
@@ -62,6 +14,18 @@ int main() {
 
     Town MyTown2(MyTown1);
     MyTown2.Print();
-           
+
+    vector<Town> Towns;
+    Towns.push_back(MyTown1);
+    Towns.push_back(MyTown2);
+    Towns.push_back(Town("Kiyv", 1000, 2000000, 0100));
+
+    for (int i = 0; i < Towns.size(); i++)
+    {
+        cout << "Town " << i + 1 << ":" << endl;
+        Towns[i].Print();
+        cout << endl;
+    }
+
     return 0;
 }
