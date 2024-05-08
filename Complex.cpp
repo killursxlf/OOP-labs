@@ -28,12 +28,14 @@ bool Complex::operator>(const Complex& other) const
 {
 	return (abs(a) + abs(b)) > (abs(other.a) + abs(other.b));
 }
+
 Complex operator--(Complex& other)
 {
 	other.a--;
 	other.b--;
 	return other;
 }
+
 Complex operator--(Complex& other, int notused)
 {
 	Complex temp = other;
