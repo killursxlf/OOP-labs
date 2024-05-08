@@ -7,10 +7,15 @@ int& Date::operator[](int index)
         throw out_of_range("Index is out of range.");
     }
 
-    switch (index) {
-    case 0: return day;
-    case 1: return month;
-    case 2: return year;
-    default: return day;
+    switch (index) 
+    {
+        case 0: 
+            return day;
+        case 1: 
+            return month;
+        case 2: 
+            return year;
+        default: 
+            return day;
     }
 }
