@@ -8,6 +8,21 @@ Complex operator-(Complex& main, Complex& other)
     return Complex(main.get_a() - other.get_a(), main.get_b() - other.get_b());
 }
 
+Complex operator--(Complex& other)
+{
+    --other.a;
+    --other.b;
+    return other;
+}
+
+Complex operator--(Complex& other, int notused)
+{
+    Complex temp = other;
+    --other.a;
+    --other.b;
+    return temp;
+}
+
 int main() {
     Complex c1(3.0, 4.0);
     Complex c2(2.0, 5.0);
