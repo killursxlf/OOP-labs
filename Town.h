@@ -11,6 +11,7 @@ private:
     int post_index;
 
 public:
+
     Town()
     {
         cout << "Default constructor work" << endl;
@@ -19,6 +20,7 @@ public:
         population = 0.0;
         post_index = 0;
     }
+
     Town(string Text, double area_value, double population_value, int index)
     {
         cout << "Constructor with parameters work" << endl;
@@ -27,6 +29,7 @@ public:
         population = population_value;
         post_index = index;
     }
+
     Town(const Town& other_town)
     {
         Name = other_town.Name;
@@ -35,6 +38,7 @@ public:
         post_index = other_town.post_index;
         cout << "Work copy constructor" << endl;
     }
+
     ~Town()
     {
         cout << "Distructor work" << endl;
@@ -52,4 +56,3 @@ public:
     double get_population();
     int get_index();
 };
-
