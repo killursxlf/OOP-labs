@@ -9,11 +9,11 @@ int& Date::operator[](int index)
 
     switch (index) 
     {
-        case 0: 
+        case DAY_INDEX: 
             return day;
-        case 1: 
+        case MONTH_INDEX: 
             return month;
-        case 2: 
+        case YEAR_INDEX: 
             return year;
         default: 
             return day;

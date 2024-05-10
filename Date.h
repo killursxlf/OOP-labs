@@ -3,6 +3,10 @@
 #define DATE_H_INCLUDED
 #include <iostream>
 
+const int DAY_INDEX = 0;
+const int MONTH_INDEX = 1;
+const int YEAR_INDEX = 2;
+
 using namespace std;
 
 class Date {
