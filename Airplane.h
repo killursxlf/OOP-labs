@@ -6,12 +6,12 @@ using namespace std;
 
 class Airplane {
 private:
+
     string name; 
     double speed;    
     double height; 
 
 public:
-
 
     string objectName;
     static int count;
