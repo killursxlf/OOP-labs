@@ -8,25 +8,15 @@ public:
         this->yearOfStudy = yearOfStudy;
     }
 
-    int getYearOfStudy() const { return yearOfStudy; }
+    int getYearOfStudy();
 
-    void setYearOfStudy(int newYearOfStudy) { yearOfStudy = newYearOfStudy; }
+    void setYearOfStudy(int newYearOfStudy);
 
-    void introduce() 
-    {
-        Person::introduce();
-        cout << "Years of study: " << yearOfStudy << endl;
-    }
+    void introduce();
 
-    void increaseYearOfStudy() 
-    {
-        yearOfStudy++;
-    }
+    void increaseYearOfStudy();
 
-    Person* getPerson(Person* person)
-    {
-        return new Person(*person);
-    }
+    Person* getPerson(Person* person);
 
 private:
     int yearOfStudy;

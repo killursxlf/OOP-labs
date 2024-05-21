@@ -14,25 +14,18 @@ public:
         this->weight = weight;
     }
 
-    string getName() { return name; }
-    int getAge() { return age; }
-    string getGender() { return gender; }
-    float getWeight() { return weight; }
+    string getName();
+    int getAge();
+    string getGender(); 
+    float getWeight();
 
 
-    void setName(string newName) { name = newName; }
-    void setAge(int newAge) { age = newAge; }
-    void setGender(string newGender) { gender = newGender; }
-    void setWeight(float newWeight) { weight = newWeight; }
+    void setName(string newName);
+    void setAge(int newAge);
+    void setGender(string newGender);
+    void setWeight(float newWeight);
 
-
-    void introduce()
-    {
-        cout << "Name: " << name << endl;
-        cout << "Age: " << age << endl;
-        cout << "Gender: " << gender << endl;
-        cout << "Weight: " << weight << endl;
-    }
+    void introduce();
 
 private:
     string name;
