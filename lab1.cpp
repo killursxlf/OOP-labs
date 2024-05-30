@@ -67,24 +67,11 @@ void readFile(vector<TourRoute>& routes)
     }
 }
 
-
-void writeInFile(vector<TourRoute>& routes)
-{
-    ofstream fout(FILE_NAME, ios::binary);
-    if (!fout.is_open())
+    void addRoute(const TourRoute& route)
     {
-        cout << "Failed to open file for writing." << endl;
-        return;
+        routes.push_back(route);
+        logFile << "Added route: " << route.name << endl;
     }
-    else
-    {
-        for (const auto& route : routes)
-        {
-            fout.write((char*)&route, sizeof(TourRoute));
-        }
-        fout.close();
-    }
-}
 
 
 void printAllRoutes()
